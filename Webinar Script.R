@@ -116,7 +116,7 @@ d.out1 <- bmatch(NLSY79.data.sorted$childCare,
                m.threshold = .1))
 
 #Balance comparison
-b <- bal.tab(cov.form, data = NLSY79.data,
+bm <- bal.tab(cov.form, data = NLSY79.data,
              weights = list(NN1to1 = get.w(m.out1),
                             NN1to3 = get.w(m.out2),
                             Genetic = get.w(m.out3),
@@ -126,7 +126,7 @@ b <- bal.tab(cov.form, data = NLSY79.data,
              method = c(rep("matching", 4), "weighting"),
              m.threshold = .1)
 
-print(b, disp.bal.tab = FALSE)
+print(bm, disp.bal.tab = FALSE)
 
 #Effect estimation
 library(jtools)
@@ -190,6 +190,18 @@ ow.out2 <- optweight(cov.form, data = NLSY79.data,
                      min.w = 1e-8)
 (b11 <- bal.tab(ow.out2, estimand = "ATT",
                 m.threshold = .1))
+
+#Balance comparison
+bw <- bal.tab(cov.form, data = NLSY79.data,
+              weights = list(Logistic = get.w(w.out1),
+                             GBM = get.w(w.out2),
+                             CBPS = get.w(w.out3),
+                             Ebal = get.w(w.out4),
+                             Opt.00 = ow.out1$weights,
+                             Opt.01 = ow.out2$weights),
+              estimand = "ATT", method = "weighting",
+              m.threshold = .1)
+print(bw, disp.bal.tab = FALSE)
 
 #Effect estimation
 library(jtools)
